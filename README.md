@@ -142,8 +142,10 @@ the images in `docs/`, which are also the store listing's screenshots.
    suite, refuses a tag that doesn't match `metadata.json`, builds
    `ai-usage-limit-1.0.1.plasmoid` and attaches it to a GitHub release.
 4. Upload that same file to the widget's page on
-   [store.kde.org](https://store.kde.org). Plasma's *Get New Widgets* browses
-   the store's Plasma 6 widgets category. Users with the widget installed are
+   [store.kde.org](https://store.kde.org), filed under **Plasma 6 Monitoring**.
+   Plasma's *Get New Widgets* searches the whole "Plasma 6 Extensions" group,
+   which is a parent, not something you can pick, so any subcategory under it
+   works; Monitoring fits a usage meter. Users with the widget installed are
    offered the update there and in Discover.
 
 `tools/build.sh` builds the same file locally into `dist/`.
