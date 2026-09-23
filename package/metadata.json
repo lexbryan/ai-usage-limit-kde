@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "lexbryan"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Claude Code and Codex rate-limit usage in your panel: capacity remaining in the 5-hour and weekly windows, with reset times.",
+        "Icon": "speedometer",
+        "Id": "me.lexbryan.aiusagelimit",
+        "License": "MIT",
+        "Name": "AI Usage Limit",
+        "Version": "1.0.0",
+        "Website": "https://github.com/lexbryan/ai-usage-limit-kde",
+        "BugReportUrl": "https://github.com/lexbryan/ai-usage-limit-kde/issues"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

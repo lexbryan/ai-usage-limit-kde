@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: All suites
+        run: ./test/all.sh
+      - name: Scripts parse
+        run: |
+          for f in install.sh uninstall.sh tools/*.sh test/*.sh package/contents/code/*.sh; do
+            bash -n "$f"
+          done
+          for f in package/contents/code/*.py; do
+            python3 -c 'import ast,sys; ast.parse(open(sys.argv[1]).read())' "$f"
+          done
+
+  # Every push builds the .plasmoid as a downloadable artifact. A v* tag also
+  # publishes it as a GitHub release — the same file then goes to the KDE Store.
+  package:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag matches metadata.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          v=$(python3 -c 'import json; print(json.load(open("package/metadata.json"))["KPlugin"]["Version"])')
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "tag is $GITHUB_REF_NAME but package/metadata.json says $v"
+            exit 1
+          fi
+      - name: Build
+        run: tools/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plasmoid
+          path: dist/*.plasmoid
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.plasmoid --title "$GITHUB_REF_NAME" --generate-notes
